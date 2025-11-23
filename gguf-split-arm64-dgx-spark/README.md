@@ -128,4 +128,18 @@ anelson@dgx-spark0:~/llama.cpp/build$ cmake --build . --target llama-gguf-split
 [100%] Built target llama-gguf-split
 ```
 
+# Importing merged file into ollama
 
+- Create `Modelfile` and reference the merged file
+
+```
+FROM /path/to/your/merged/file/merged-filename.gguf
+```
+
+- run `ollama create ${modelName} ${PathToYour-Modelfile}`
+
+E.g 
+
+```
+ollama create gpt-oss-120b -f ~/llm_models/gpt-oss-120b-mxfp4/Modelfile 
+```
