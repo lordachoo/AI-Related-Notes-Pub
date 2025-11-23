@@ -141,5 +141,11 @@ FROM /path/to/your/merged/file/merged-filename.gguf
 E.g 
 
 ```
-ollama create gpt-oss-120b -f ~/llm_models/gpt-oss-120b-mxfp4/Modelfile 
+anelson@dgx-spark0:~/llm_models/gpt-oss-120b-mxfp4$ ollama create gpt-oss-120b -f ~/llm_models/gpt-oss-120b-mxfp4/Modelfile 
+gathering model components 
+copying file sha256:3e6a6ba3accdcd1af6d54c572312d53b3f54973e133994d7a155b0ff9d1bf19b 100% 
+parsing GGUF 
+using existing layer sha256:3e6a6ba3accdcd1af6d54c572312d53b3f54973e133994d7a155b0ff9d1bf19b 
+writing manifest 
+success 
 ```
