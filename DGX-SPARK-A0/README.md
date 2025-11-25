@@ -45,8 +45,7 @@ docker compose down
 
 ### Error
 
-```
-Traceback (most recent call last):
+```python
 Traceback (most recent call last):
   File "/a0/python/extensions/message_loop_prompts_after/_50_recall_memories.py", line 146, in search_memories
     filter = await self.agent.call_utility_model(
@@ -67,7 +66,7 @@ TypeError: can only concatenate str (not "NoneType") to str
 
 ### Fix
 
-```
+```bash
 anelson@dgx-spark0:~/a0-dev$ diff ~/a0/models.py.orig ~/a0/models.py
 118c118
 <         self.reasoning += processed_chunk["reasoning_delta"]

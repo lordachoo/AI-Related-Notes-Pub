@@ -9,6 +9,11 @@
 
 - [Instructions for Ollama <-> Docker](./native-ollama-connect-to-docker-container/README.md)
 
+## DGX SPARK GENERAL
+
+- [DGX SPARK WATTAGE LIMIT?](./DGX-SPARK/GB10-Wattage/README.md)
+- [DGX SPARK STRESS](./DGX-SPARK/GB10-Wattage/dgx-spark-stress/README.md)
+
 ## Agent Zero on DGX Spark
 
 - [DGX SPARK A0 Info](./DGX-SPARK-A0/README.md)
