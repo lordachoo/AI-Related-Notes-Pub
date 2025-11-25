@@ -1,0 +1,2 @@
+#!/bin/bash
+docker logs a0-dev-agent-zero-1 -f

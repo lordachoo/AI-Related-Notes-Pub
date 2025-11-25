@@ -1,0 +1,10 @@
+services:
+  agent-zero:
+    image: agent0ai/agent-zero
+    ports:
+      - "8881:80"
+    volumes:
+      - /home/anelson/a0:/a0
+    environment:
+      - ALLOWED_ORIGINS=*://localhost:*,*://127.0.0.1:*,*://0.0.0.0:*,*://192.168.1.161:*,*://73.71.163.73:*
+    restart: unless-stopped

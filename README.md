@@ -7,4 +7,8 @@
 
 ## Connecting native host run ollama to Docker hosted SW
 
-- [Instructions for Ollama <-> Docker](./native-ollama-connect-to-docker-sw/README.md)
+- [Instructions for Ollama <-> Docker](./native-ollama-connect-to-docker-container/README.md)
+
+## Agent Zero on DGX Spark
+
+- [DGX SPARK A0 Info](./DGX-SPARK-A0/README.md)
