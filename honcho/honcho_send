@@ -1,0 +1,64 @@
+# ~/.honcho_send.sh   —  reload with:  source ~/.honcho_send.sh
+# usage: honcho_send <filepath> [peer_id] [session]
+#   defaults: peer=dgx-spark  session=anelson  workspace=dgx-spark
+
+honcho_send() {
+  local file="$1" peer="${2:-dgx-spark}" session="${3:-anelson}"
+  if [[ -z "$file" || ! -f "$file" ]]; then
+    echo "usage: honcho_send <filepath> [peer_id] [session]" >&2
+    [[ -n "$file" ]] && echo "  file not found: '$file'" >&2
+    return 1
+  fi
+  HS_FILE="$file" HS_PEER="$peer" HS_SESSION="$session" python3 - <<'PY'
+import json, os, sys, urllib.request, urllib.error
+cfg       = os.path.expanduser("~/.hermes/honcho.json")
+workspace = "dgx-spark"
+LIMIT     = 24000   # conservative; honcho caps per-message content (~25k)
+file, peer, session = os.environ["HS_FILE"], os.environ["HS_PEER"], os.environ["HS_SESSION"]
+
+try:
+    key = json.load(open(cfg))["apiKey"]
+except Exception as e:
+    sys.exit(f"honcho_send: can't read apiKey from {cfg}: {e}")
+
+text = open(file, encoding="utf-8").read()
+
+def split(t, limit):
+    if len(t) <= limit:
+        return [t]
+    out, cur = [], ""
+    for p in t.split("\n\n"):
+        if len(p) > limit:                      # paragraph itself too big -> hard split
+            if cur: out.append(cur); cur = ""
+            out += [p[i:i+limit] for i in range(0, len(p), limit)]
+            continue
+        cand = p if not cur else cur + "\n\n" + p
+        if len(cand) > limit:
+            out.append(cur); cur = p
+        else:
+            cur = cand
+    if cur: out.append(cur)
+    return out
+
+chunks = split(text, LIMIT)
+n = len(chunks)
+base = os.path.basename(file)
+msgs = [{"peer_id": peer,
+         "content": (f"[{base} part {i}/{n}]\n" if n > 1 else "") + c}
+        for i, c in enumerate(chunks, 1)]
+
+print(f"\u2192 {len(text)} chars -> {n} message(s)  peer={peer}  session={session}  file={file}",
+      file=sys.stderr)
+
+url = f"https://api.honcho.dev/v3/workspaces/{workspace}/sessions/{session}/messages"
+req = urllib.request.Request(url, data=json.dumps({"messages": msgs}).encode(),
+        headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"})
+try:
+    resp = json.loads(urllib.request.urlopen(req).read().decode())
+    ids = [m.get("id") for m in resp] if isinstance(resp, list) else resp
+    print(f"OK: stored {len(ids) if isinstance(ids, list) else 1} message(s)")
+    print(json.dumps(ids, indent=2))
+except urllib.error.HTTPError as e:
+    sys.exit(f"HTTP {e.code}: {e.read().decode()}")
+PY
+}
